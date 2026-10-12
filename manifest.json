@@ -4,11 +4,11 @@
   "display": "standalone",
   "name": "calendrier lunaire",
   "orientation": "any",
-  "scope": "//calendrierlune/",
+  "scope": "/calendrierlune/",
   "short_name": "lune",
   "start_url": "/calendrierlune/",
   "theme_color": "#ffffff",
-  "id": "/calendrier lune/",
+  "id": "/calendrierlune/",
   "description": "suivre son jardin selon la lune",
   "lang": "fr"
 }
