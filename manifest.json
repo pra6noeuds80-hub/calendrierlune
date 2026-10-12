@@ -1,0 +1,13 @@
+{
+  "background_color": "rgb(59, 151, 205)",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "calendrier lunaire",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "lune",
+  "start_url": "/",
+  "theme_color": "rgb(53, 64, 205)",
+  "id": "/calendrierlune/",
+  "description": "un calendrier lunaire pour suivre le jardin"
+}
