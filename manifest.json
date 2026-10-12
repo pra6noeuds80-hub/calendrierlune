@@ -1,0 +1,14 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "pra6noeuds80-hub.github",
+  "orientation": "any",
+  "scope": "/calendrierlune",
+  "short_name": "pra6noeuds80-hub.github",
+  "start_url": "/calendrierlune/",
+  "theme_color": "#ffffff",
+  "id": "/calendrierlune/",
+  "description": "suivre son jardin avec la lune",
+  "lang": "fr"
+}
