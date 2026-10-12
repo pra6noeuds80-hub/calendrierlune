@@ -84,6 +84,7 @@ nav{max-height:none;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scroll-
  <input id="pf" placeholder="Amies (virgules)" size="16"><input id="po" placeholder="Ennemies" size="14"><input id="ps" placeholder="Semis" size="10">
  <button class="btn" id="pa">Ajouter</button></div>
  <table><thead><tr><th>Plante</th><th>Type</th><th>S'entendent avec</th><th>À éloigner de</th><th>Semis</th><th></th></tr></thead><tbody id="pb"></tbody></table></div>
+ <div class="panel" id="pix"></div>
 </section>
 <section class="page" id="meteo"><h2>Météo des jardins</h2>
  <div class="panel"><div class="bar"><label>Ville <select id="wc"></select></label><span style="opacity:.8;font-size:.9rem">Prévisions sur 16 jours (Open-Meteo). Alerte au-delà de 5 jours de suite de pluie ou de soleil ; gel signalé aussi.</span></div><div id="ws"></div></div>
@@ -109,7 +110,8 @@ nav{max-height:none;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scroll-
  <div class="panel" id="dprop" style="display:none"><h3 style="margin-top:0">Élément sélectionné</h3><div class="bar"><input id="dn" placeholder="Nom"><label>Largeur <input type="number" id="dw" min=".1" step=".1" style="width:5rem"> m</label><label>Longueur <input type="number" id="dh" min=".1" step=".1" style="width:5rem"> m</label><input type="color" id="dc" aria-label="Couleur"><button class="btn" id="drot">Pivoter</button><button class="btn" id="ddp">Dupliquer</button><button class="btn" id="dfr">Devant</button><button class="btn" id="dde">Supprimer</button><span id="dsu"></span></div></div>
  <p style="opacity:.8;font-size:.85rem">Glissez les éléments pour les placer. Vos plans sont enregistrés uniquement dans votre navigateur : chaque visiteur a les siens et ne voit ni ne modifie ceux des autres. Le PDF contient le plan, la rotation, les tâches, les récoltes et les notes.</p></section>
 <section class="page" id="fiches"><h2>Fiches des plantes</h2><div class="bar"><input id="fq" placeholder="Rechercher une plante…"></div><div class="fc" id="fg"></div></section>
-<section class="page" id="fleurs"><h2>Calendrier des floraisons</h2><div class="panel"><b>En fleur ce mois-ci :</b> <span id="fnow"></span></div>
+<section class="page" id="fleurs"><h2>Calendrier des floraisons</h2><div class="panel"><b>En fleur ce mois-ci :</b> <div id="fnow" style="margin-top:.4rem"></div></div>
+ <div class="panel"><div class="bar"><input id="flq" placeholder="Rechercher une fleur…"><select id="flk" aria-label="Catégorie"></select><label><input type="checkbox" id="flm"> En fleur ce mois-ci seulement</label></div></div>
  <div class="panel" style="overflow:auto"><table class="fl"><thead id="fh"></thead><tbody id="fb"></tbody></table></div>
  <div class="panel"><div class="bar"><b>Ajouter une fleur :</b><input id="fn" placeholder="Nom" size="14"><label>du <select id="fd"></select></label><label>au <select id="ff"></select></label><input type="color" id="fcx" value="#c93a5a"><button class="btn" id="fa">Ajouter</button></div></div></section>
 <section class="page" id="guide"><h2>Maladies et ravageurs</h2><div class="panel"><div class="bar"><input id="gq2" placeholder="Rechercher (mildiou, pucerons, tomate…)" size="30"></div><p style="margin:0;opacity:.85;font-size:.9rem">Traitez le soir, jamais en plein soleil, et testez d'abord sur quelques feuilles. Même naturels, les produits se dosent : respectez les proportions.</p></div><div class="fc" id="gg"></div></section>
@@ -134,7 +136,7 @@ nav{max-height:none;overflow-x:auto;overflow-y:hidden;white-space:nowrap;scroll-
  <div style="margin-top:.8rem"><b>Jours lunaires conseillés</b> <small style="opacity:.75">(tradition : lune descendante, hors nœuds lunaires)</small><div id="bjl"></div></div></div>
  <div class="panel" style="overflow:auto"><div class="bar" style="font-size:.85rem;opacity:.85">Touchez une ligne pour voir le conseil de l'espèce.</div><table class="fl"><thead id="bth"></thead><tbody id="btb"></tbody></table></div>
  <h3 style="color:var(--laiton);font-weight:400;font-size:1.5rem;margin:1.2rem 0 .6rem">Comment faire</h3><div id="bhow"></div>
- <p style="opacity:.8;font-size:.85rem">Périodes indicatives pour le nord de la France, d'après les pratiques courantes de jardinage (bouture herbacée, semi-aoûtée de mi-juillet à mi-septembre, bois sec en hiver, conifères en châssis froid). Elles varient selon l'espèce, la variété et la météo de l'année.</p></section>
+ <p style="opacity:.8;font-size:.85rem">Périodes indicatives pour le nord de la France, d'après les pratiques courantes de jardinage (bouture herbacée, semi-aoûtée de mi-juillet à mi-septembre, bois sec en hiver, conifères en châssis froid). Elles varient selon l'espèce, la variété et la météo de l'année. Les plantes de l'index de votre livre y ont été ajoutées.</p></section>
 <section class="page" id="greffes"><h2>Calendrier des greffes</h2>
  <div class="panel"><div class="bar"><label>Mois <select id="gfm"></select></label><label>Technique <select id="gft"></select></label><input id="gfq" placeholder="Rechercher une espèce…"></div>
  <div id="gfn"></div>
@@ -233,7 +235,7 @@ $('#beds').onchange=e=>{const i=e.target.dataset.a;if(i===undefined||!e.target.v
 $('#ab').onclick=()=>{const n=$('#nb').value.trim();if(n){B.push({n,c:{}});$('#nb').value='';drawBeds()}};
 const NEXT={legumineuse:'feuille',feuille:'fruit',fruit:'racine',racine:'legumineuse',fleur:'fleur'};
 $('#rot').onclick=()=>{B.forEach((b,i)=>{const L=b.c[Y]||[];if(!L.length)return;const ty=[...new Set(L.map(x=>NEXT[byN(x)?.t]).filter(Boolean))],out=[];
- ty.forEach(t=>{const c=P.filter(p=>p.t==t&&cat(p)!='fruitier'&&!out.some(o=>compat(byN(o),p)<0)&&!(b.c[Y+1]||[]).includes(p.n)&&!L.includes(p.n));if(c.length)out.push(c[0].n)});
+ ty.forEach(t=>{const c=P.filter(p=>p.t==t&&['potager','aromatique','fleur','annuelle'].includes(cat(p))&&!out.some(o=>compat(byN(o),p)<0)&&!(b.c[Y+1]||[]).includes(p.n)&&!L.includes(p.n));if(c.length)out.push(c[0].n)});
  b.c[Y+1]=[...(b.c[Y+1]||[]),...out]});$('#yr').value=Y+1;drawBeds()};
 /* ---- Astro ---- */
 $('#sg').innerHTML=SIGNES.map(s=>`<tr><td>${s[0]}</td><td>${s[1]}</td><td><span class="tag ${s[2]}">${s[2]}</span></td><td>${s[3]}</td></tr>`).join('');
@@ -424,7 +426,7 @@ if(ls('seedv',0)<2){sv('plantes_backup',P);const have=new Set(P.map(p=>norm(p.n)
 $('#qc').onchange=()=>drawP();
 $('#pex').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(P)],{type:'application/json'}));a.download='mes-plantes.json';a.click()};
 $('#pim').onchange=async e=>{try{const d=JSON.parse(await e.target.files[0].text());if(!Array.isArray(d)||!d.every(x=>x&&x.n&&x.t))throw 0;P=d.map(x=>({n:String(x.n),t:x.t,f:x.f||[],o:x.o||[],s:x.s||''}));drawP()}catch(x){alert('Fichier de plantes illisible.')}};
-$('#prs').onclick=()=>{const b=ls('plantes_backup',null);if(!b){alert('Aucune sauvegarde trouvée.');return}if(confirm('Remplacer la liste actuelle par celle d\'avant la mise à jour ?')){P=b;drawP()}};
+$('#prs').onclick=()=>{const b=ls('plantes_backup3',null)||ls('plantes_backup',null);if(!b){alert('Aucune sauvegarde trouvée.');return}if(confirm('Remplacer la liste actuelle par la sauvegarde d\'avant la dernière mise à jour ('+b.length+' plantes) ?')){P=b;drawP()}};
 /* ---- Page Semis et récoltes ---- */
 const ACT=[['S','Semer','#e0654e'],['P','Planter','#4ea884'],['R','Récolter','#c9a45c'],['T','Tailler','#8a6fc9']];
 function drawS(){const m=+$('#smm').value,q=norm($('#smq').value),c=$('#smc').value,cm=now.getMonth()+1,ok=p=>(!c||cat(p)==c)&&norm(p.n).includes(q)&&QC[norm(p.n)];
@@ -576,10 +578,189 @@ Zinnia|7|10|#d94f4f
 Échinacée|7|9|#c95a9a
 Pensée|10|4|#7a4fb0`.split('\n').map(l=>{const a=l.split('|');return{n:a[0],a:+a[1],b:+a[2],c:a[3]}});
 let FLC=ls('fleurs',[]);const inM=(m,a,b)=>a<=b?m>=a&&m<=b:m>=a||m<=b;
-function drawFl(){const all=[...FL0,...FLC.map(x=>({...x,u:1}))],cm=now.getMonth()+1;
+const FLK={'':'Toutes les catégories',arbre:'Arbres',arbuste:'Arbustes',grimpante:'Grimpantes',vivace:'Vivaces',annuelle:'Annuelles',bulbe:'Bulbes'};
+const FL0K={Crocus:'bulbe',Primevère:'vivace',Narcisse:'bulbe',Tulipe:'bulbe',Pivoine:'vivace',Bourrache:'annuelle',Rosier:'arbuste',Sauge:'vivace',Souci:'annuelle',Lavande:'arbuste',Hortensia:'arbuste',Capucine:'annuelle',Cosmos:'annuelle',"Oeillet d'inde":'annuelle',Nénuphar:'vivace',Dahlia:'bulbe',Tournesol:'annuelle',Zinnia:'annuelle',Échinacée:'vivace',Pensée:'annuelle'};
+const FLI=`Abélia|arbuste|7|10|#f3c6d3
+Acacia rose|arbuste|5|6|#e88aa5
+Acanthe|vivace|6|8|#d8cbd9
+Achillée|vivace|6|9|#e6c14a
+Aconit tue-loup|vivace|7|9|#e6c14a
+Actinidia|grimpante|5|6|#f3efe6
+Adonide|vivace|4|5|#e6c14a
+Agapanthe|bulbe|7|9|#5b8fd9
+Agastache|vivace|7|10|#8a6fc9
+Agérate|annuelle|6|10|#7ba7e0
+Agneau-chaste|arbuste|7|9|#8a6fc9
+Ail d'ornement|bulbe|5|7|#c95a9a
+Airelle|arbuste|5|6|#f3c6d3
+Ajonc|arbuste|3|6|#e6c14a
+Akébie|grimpante|4|5|#8a4f7a
+Albizzia (arbre de soie)|arbre|7|8|#e88aa5
+Alchémille|vivace|5|7|#c8d64a
+Alstroemère|vivace|6|9|#e0654e
+Alysse odorante|annuelle|5|10|#f3efe6
+Amarante|annuelle|7|10|#7a1f45
+Amaryllis|bulbe|8|10|#e88aa5
+Amélanchier|arbuste|4|5|#f3efe6
+Ammi|annuelle|6|9|#f3efe6
+Anagallis|annuelle|6|9|#5b8fd9
+Ancolie|vivace|5|7|#8a6fc9
+Andromède|arbuste|4|5|#f3c6d3
+Anémone du Japon|vivace|8|10|#f3c6d3
+Anthémis|vivace|6|9|#e6c14a
+Arabette|vivace|3|5|#f3efe6
+Arbre à franges (arbre de neige)|arbuste|5|6|#f3efe6
+Arbre aux mouchoirs|arbre|4|5|#f3efe6
+Arbre de Judée|arbre|4|5|#c95a9a
+Arum d'Éthiopie|bulbe|5|8|#f3efe6
+Aster|vivace|9|10|#8a6fc9
+Astilbe|vivace|6|8|#e879b0
+Astrance|vivace|6|8|#f3c6d3
+Aubépine|arbuste|4|5|#f3efe6
+Aubriète|vivace|3|5|#8a6fc9
+Azalée|arbuste|4|6|#e879b0
+Baguenaudier commun|arbuste|5|7|#e6c14a
+Balsamine|annuelle|6|10|#e879b0
+Barbe-de-bouc|vivace|6|7|#f3efe6
+Bec-de-grue|vivace|5|9|#c95a9a
+Bégonia à massifs|annuelle|6|10|#d94f4f
+Bégonia tubéreux|bulbe|6|10|#e8a020
+Belle-de-jour|annuelle|6|9|#5b8fd9
+Belle-de-nuit (merveille du Pérou)|annuelle|7|10|#e879b0
+Benoîte|vivace|5|8|#e0654e
+Berbéris|arbuste|4|5|#e6c14a
+Bergénia|vivace|3|5|#e879b0
+Bidens|annuelle|6|10|#e6c14a
+Bignone|grimpante|7|9|#e0654e
+Bleuet|annuelle|6|8|#5b8fd9
+Bougainvillée|grimpante|6|9|#c95a9a
+Bouton-d'argent|vivace|6|8|#f3efe6
+Brachyscome|annuelle|6|10|#7ba7e0
+Bruyère d'hiver|arbuste|12|4|#e879b0
+Buddleia (arbre aux papillons)|arbuste|7|10|#8a6fc9
+Buglosse|annuelle|5|9|#5b8fd9
+Buisson-ardent|arbuste|5|6|#f3efe6
+Buplèvre|arbuste|6|9|#e6c14a
+Calandrinia|annuelle|6|9|#e879b0
+Calcéolaire|annuelle|6|9|#e6c14a
+Callune|arbuste|8|10|#c95a9a
+Camélia|arbuste|2|4|#e879b0
+Campanule|vivace|6|8|#8a6fc9
+Canna|bulbe|7|10|#e0654e
+Carline|vivace|7|9|#f3efe6
+Cassia|arbuste|7|10|#e6c14a
+Catalpa|arbre|6|7|#f3efe6
+Céanothe|arbuste|6|10|#5b8fd9
+Célosie|annuelle|7|10|#e0654e
+Céraiste|vivace|5|6|#f3efe6
+Cerisier à fleurs|arbre|3|4|#f3c6d3
+Chèvrefeuille|grimpante|6|9|#f3efe6
+Chrysanthème|vivace|9|11|#e8a020
+Ciboulette|vivace|5|7|#c95a9a
+Clématite|grimpante|5|9|#8a6fc9
+Forsythia|arbuste|3|4|#e6c14a
+Fuchsia|arbuste|6|10|#c95a9a
+Géranium (pélargonium)|annuelle|5|10|#d94f4f
+Hellébore|vivace|1|4|#d8cbd9
+Hémérocalle|vivace|6|8|#e8a020
+Herbe-aux-chats|vivace|5|9|#8a6fc9
+Hibiscus|arbuste|7|10|#e879b0
+Hortensia grimpant|grimpante|6|7|#f3efe6
+Hosta|vivace|7|8|#8a6fc9
+Ibéris|vivace|4|6|#f3efe6
+Immortelle|annuelle|7|10|#e6c14a
+Impatience|annuelle|5|10|#e879b0
+Impatience de Nouvelle-Guinée|annuelle|5|10|#e0654e
+Ipomée|annuelle|7|10|#5b8fd9
+Iris rhizomateux|vivace|5|6|#8a6fc9
+Jacinthe|bulbe|3|4|#5b8fd9
+Jasmin d'été|grimpante|6|9|#f3efe6
+Jasmin d'hiver|grimpante|12|3|#e6c14a
+Jasmin étoilé|grimpante|6|7|#f3efe6
+Jonquille|bulbe|3|4|#e6c14a
+Joubarbe|vivace|7|8|#e879b0
+Lantana|annuelle|6|10|#e8a020
+Laurier-rose|arbuste|6|9|#e879b0
+Laurier-tin|arbuste|11|4|#f3efe6
+Lavande à toupet|arbuste|4|7|#8a6fc9
+Lavatère|annuelle|6|9|#e879b0
+Leucanthème|vivace|5|8|#f3efe6
+Liatris|bulbe|7|9|#8a6fc9
+Lierre terrestre|vivace|4|5|#8a6fc9
+Ligulaire|vivace|7|9|#e6c14a
+Lilas|arbuste|4|5|#8a6fc9
+Lilas des Indes|arbuste|7|9|#e879b0
+Linaire|annuelle|6|9|#8a6fc9
+Lin annuel|annuelle|6|8|#5b8fd9
+Lin vivace|vivace|5|8|#5b8fd9
+Lis|bulbe|6|8|#f3c6a0
+Lithospermum|vivace|5|8|#5b8fd9
+Lobélia|annuelle|6|9|#5b8fd9
+Lunaire (monnaie-du-pape)|annuelle|4|6|#8a6fc9
+Lupin|vivace|5|7|#8a6fc9
+Lysimaque|vivace|6|8|#e6c14a
+Magnolia|arbuste|3|5|#f3c6d3
+Mahonia du Japon|arbuste|11|3|#e6c14a
+Malope|annuelle|6|9|#e879b0
+Marguerite d'automne|vivace|9|11|#f3efe6
+Marronnier|arbre|4|5|#f3efe6
+Matricaire|annuelle|6|9|#f3efe6
+Mauve|annuelle|6|9|#c95a9a
+Merisier des oiseaux|arbre|4|5|#f3efe6
+Millepertuis|arbuste|6|9|#e6c14a
+Mimosa|arbuste|1|3|#e6c14a
+Mimulus|vivace|6|9|#e6c14a
+Monarde|vivace|6|9|#d94f4f
+Montbretia|bulbe|7|9|#e0654e
+Muflier|annuelle|6|10|#e879b0
+Muguet|vivace|4|5|#f3efe6
+Myosotis|annuelle|4|6|#7ba7e0
+Myrte|arbuste|7|9|#f3efe6
+Némésie|annuelle|6|10|#e879b0
+Nigelle|annuelle|6|8|#7ba7e0
+Œillet|vivace|6|9|#e879b0
+Œillet de poète|annuelle|5|7|#d94f4f
+Oenothère|vivace|6|9|#e6c14a
+Omphalodes|vivace|3|5|#7ba7e0
+Oreille d'ours|vivace|4|5|#e6c14a
+Orpin|vivace|8|10|#e879b0
+Panicaut|vivace|7|9|#5b8fd9
+Pâquerette|annuelle|3|6|#f3efe6
+Passiflore|grimpante|6|9|#c95a9a
+Pavot|annuelle|6|8|#d94f4f
+Pavot bleu de l'Himalaya|vivace|6|7|#5b8fd9
+Pavot de Californie|annuelle|6|9|#e8a020
+Pavot d'Orient|vivace|5|6|#d94f4f
+Penstemon|vivace|6|9|#d94f4f
+Perce-neige|bulbe|1|3|#f3efe6
+Pervenche|vivace|3|5|#5b8fd9
+Pétunia|annuelle|5|10|#e879b0
+Phacélie|annuelle|6|9|#8a6fc9
+Phlox|vivace|7|9|#e879b0
+Pied-d'alouette|annuelle|6|8|#5b8fd9
+Pois de senteur|annuelle|6|9|#e879b0
+Potentille|arbuste|6|10|#e6c14a
+Pulsatille|vivace|3|5|#8a6fc9
+Pyrèthre|vivace|5|7|#e0654e
+Reine-marguerite|annuelle|7|10|#8a6fc9
+Renoncule|bulbe|5|7|#e0654e
+Renouée|vivace|7|10|#e879b0
+Rhododendron|arbuste|4|6|#c95a9a
+Robinier|arbre|5|6|#f3efe6
+Rodgersia|vivace|6|8|#f3efe6
+Spirée|arbuste|5|7|#f3efe6
+Troène|arbuste|6|7|#f3efe6
+Verveine|annuelle|6|10|#8a6fc9
+Weigela|arbuste|5|6|#e879b0`.split('\n').filter(Boolean).map(l=>{const a=l.split('|');return{n:a[0],k:a[1],a:+a[2],b:+a[3],c:a[4]}});
+$('#flk').innerHTML=Object.entries(FLK).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
+function drawFl(){const cm=now.getMonth()+1,q=norm($('#flq').value),k=$('#flk').value,only=$('#flm').checked,
+ all=[...FL0.map(f=>({...f,k:FL0K[f.n]||'vivace'})),...FLI,...FLC.map(x=>({...x,k:x.k||'',u:1}))],
+ rows=all.filter(f=>(!k||f.k==k)&&norm(f.n).includes(q)&&(!only||inM(cm,f.a,f.b))).sort((x,y)=>x.a-y.a||x.n.localeCompare(y.n,'fr'));
  $('#fh').innerHTML='<tr><th>Fleur</th>'+JM.map((m,i)=>`<th class="${i+1==cm?'cur':''}">${m.slice(0,3)}</th>`).join('')+'<th></th></tr>';
- $('#fb').innerHTML=all.map((f,i)=>`<tr><td>${esc(f.n)}</td>${JM.map((m,k)=>`<td class="m">${inM(k+1,f.a,f.b)?`<span style="background:${f.c}"></span>`:''}</td>`).join('')}<td>${f.u?`<i class="row" data-fx="${FLC.findIndex(z=>z.n==f.n&&z.a==f.a)}" style="cursor:pointer;color:var(--corail);font-style:normal;border:0">✕</i>`:''}</td></tr>`).join('');
- $('#fnow').innerHTML=all.filter(f=>inM(cm,f.a,f.b)).map(f=>`<span class="chip" style="border-color:${f.c}">${esc(f.n)}</span>`).join('')||'Rien de prévu.'}
+ $('#fb').innerHTML=rows.map(f=>`<tr><td style="white-space:nowrap"><b>${esc(f.n)}</b><br><small style="opacity:.75">${FLK[f.k]||'Autre'}</small></td>${JM.map((m,j)=>`<td class="m">${inM(j+1,f.a,f.b)?`<span style="background:${f.c}"></span>`:''}</td>`).join('')}<td>${f.u?`<i class="row" data-fx="${FLC.findIndex(z=>z.n==f.n&&z.a==f.a)}" style="cursor:pointer;color:var(--corail);font-style:normal;border:0">✕</i>`:''}</td></tr>`).join('')||'<tr><td colspan="14" style="opacity:.8">Aucune fleur trouvée.</td></tr>';
+ const now2=all.filter(f=>inM(cm,f.a,f.b)),ch=now2.map(f=>`<span class="chip" style="border-color:${f.c}">${esc(f.n)}</span>`).join('');
+ $('#fnow').innerHTML=!now2.length?'Rien de prévu.':now2.length>25?`<details><summary>${now2.length} fleurs (touchez pour les voir)</summary><div style="margin-top:.4rem">${ch}</div></details>`:ch}
+$('#flq').oninput=$('#flk').onchange=$('#flm').onchange=drawFl;
 $('#fd').innerHTML=$('#ff').innerHTML=JM.map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');
 $('#fa').onclick=()=>{const n=$('#fn').value.trim();if(!n)return;FLC.push({n,a:+$('#fd').value,b:+$('#ff').value,c:$('#fcx').value});sv('fleurs',FLC);$('#fn').value='';drawFl()};
 $('#fb').onclick=e=>{const i=e.target.dataset.fx;if(i!==undefined&&i>=0){FLC.splice(i,1);sv('fleurs',FLC);drawFl()}};
@@ -993,4 +1174,387 @@ $('#tft').onclick=()=>{tfD=new Date(now.getFullYear(),now.getMonth(),now.getDate
 $('#tfw').onclick=e=>{const tr=e.target.closest('tr[data-d]');if(tr){const[y,mo,da]=tr.dataset.d.split('-').map(Number);tfD=new Date(y,mo-1,da);drawTf()}};
 $('#hgo').onclick=()=>document.querySelector('#nav button[data-p="faire"]').click();
 $('#nav').addEventListener('click',e=>{if(e.target.dataset.p=='faire')drawTf()});
+/* ---- Index de plantes (livre) : trouvées par la recherche, ajoutées en un clic ---- */
+const IXC={ar:['Arbre','arbre','10-3',''],as:['Arbuste','arbuste','10-3',''],co:['Conifère','conifere','9-11,3-4',''],vi:['Vivace','vivace','3-5,9-10',''],an:['Annuelle','annuelle','5-6','3-5'],gr:['Grimpante','grimpante','10-3',''],bu:['Bulbe d\'automne','bulbe','9-11',''],bp:['Bulbe de printemps','bulbe','3-5',''],po:['Potager','potager','',''],ao:['Aromatique','aromatique','',''],fr:['Fruitier','fruitier','11-3','']};
+const IXF={ar:[0,500,500],as:[0,120,150],co:[0,250,250],vi:[1,40,50],an:[1,25,30],gr:[0,200,200],bu:[10,10,15],bp:[8,15,20],po:[1,30,40],ao:[1,25,30],fr:[0,400,400]};
+const IXD=`Abélia|as|fleur|||22
+Acacia rose|as|fleur|||270
+Acaena|vi|feuille|||22
+Acanthe|vi|fleur|||22
+Achillée|vi|fleur|||22
+Aconit tue-loup|vi|fleur|||22
+Actinidia|gr|fruit|||23
+Adonide|vi|fleur|||23
+Agapanthe|bp|fleur|||23
+Agastache|vi|fleur|||23
+Agérate|an|fleur|||23
+Agneau-chaste|as|fleur|||23
+Ail d'ornement|bu|fleur|||24
+Ailante|ar|feuille|||24
+Airelle|as|fruit|||24
+Ajonc|as|fleur|||24
+Akébie|gr|fleur|||24
+Albizzia|ar|fleur|||24
+Alchémille|vi|fleur|||25
+Alisier blanc|ar|feuille|||25
+Alstroemère|vi|fleur|||26
+Alysse odorante|an|fleur|||26
+Amarante|an|fleur|||26
+Amaryllis|bp|fleur|||26
+Amélanchier|as|fruit|||26
+Ammi|an|fleur|||27
+Anagallis|an|fleur|||27
+Ancolie|vi|fleur|||27
+Andromède|as|fleur|||27
+Anémone du Japon|vi|fleur|||27
+Anthémis|vi|fleur|||27
+Arabette|vi|fleur|||28
+Aralia élevé|as|feuille|||28
+Arbousier|as|fruit|||28
+Arbre à franges|as|fleur|||30
+Arbre à papier|ar|feuille|||28
+Arbre à perruques|as|feuille|||61
+Arbre aux fraises|as|fruit|||28
+Arbre aux mouchoirs|ar|fleur|||28
+Arbre aux papillons|as|fleur|||37
+Arbre aux quarante écus|ar|feuille|||63
+Arbre de Judée|ar|fleur|||28
+Arbre de neige|as|fleur|||30
+Arbre de soie|ar|fleur|||24
+Argousier|as|fruit|||30
+Aristoloche|gr|feuille|||30
+Armoise|ao|feuille|||30
+Arroche|po|feuille|3-7||30
+Arum d'Éthiopie|bp|fleur|||31
+Aster|vi|fleur|||31
+Astilbe|vi|fleur|||31
+Astrance|vi|fleur|||31
+Aubépine|as|fleur|||31
+Aubriète|vi|fleur|||32
+Aucuba du Japon|as|feuille|||32
+Aulne|ar|feuille|||32
+Azalée|as|fleur|||32
+Baguenaudier commun|as|fleur|||32
+Balsamine|an|fleur|||33
+Bambou|vi|feuille|||33
+Barbe-de-bouc|vi|fleur|||33
+Bec-de-grue|vi|fleur|||62
+Bégonia à massifs|an|fleur|||33
+Bégonia tubéreux|bp|fleur|||33
+Belle-de-jour|an|fleur|||34
+Belle-de-nuit|an|fleur|||34
+Benoîte|vi|fleur|||35
+Berbéris|as|fleur|||35
+Bergénia|vi|fleur|||35
+Bette à cardes|po|feuille|4-7||93
+Bidens|an|fleur|||35
+Bignone|gr|fleur|||35
+Bleuet|an|fleur|||36
+Bougainvillée|gr|fleur||5-6|36
+Bouleau|ar|feuille|||36
+Bouton-d'argent|vi|fleur|||36
+Brachyscome|an|fleur|||36
+Bruyère|as|fleur|||36
+Buddleia|as|fleur|||37
+Buglosse|an|fleur|||37
+Buis|as|feuille|||37
+Buisson-ardent|as|fruit|||37
+Buplèvre|as|fleur|||37
+Calandrinia|an|fleur|||37
+Calcéolaire|an|fleur|||38
+Callune|as|fleur|||38
+Camélia|as|fleur|||38
+Campanule|vi|fleur|||38
+Canna|bp|fleur|||38
+Carline|vi|fleur|||40
+Cassia|as|fleur|||40
+Catalpa|ar|fleur|||41
+Céanothe|as|fleur|||41
+Cèdre|co|feuille|||41
+Célastre|gr|fruit|||41
+Céleri à côtes|po|feuille|2-5|4-7|41
+Célosie|an|fleur|||41
+Céraiste|vi|fleur|||42
+Cerisier acide|fr|fruit|||43
+Hellébore|vi|fleur|||66
+Hémérocalle|vi|fleur|||66
+Herbe-aux-chats|vi|fleur|||67
+Hêtre|ar|feuille|||67
+Hêtre austral|ar|feuille|||67
+Heuchère|vi|feuille|||67
+Hibiscus|as|fleur|||67
+Hortensia|as|fleur|||67
+Hortensia grimpant|gr|fleur|||68
+Hosta|vi|feuille|||68
+Houx commun|as|feuille|||68
+Ibéris|vi|fleur|||68
+If|co|feuille|||68
+If commun|co|feuille|||228
+If d'Irlande|co|feuille|||229
+Immortelle|an|fleur|||68
+Impatience|an|fleur|||70
+Impatience de Nouvelle-Guinée|an|fleur|||70
+Ipomée|an|fleur|||70
+Iris rhizomateux|vi|fleur||7-9|70
+Jacinthe|bu|fleur|||70
+Jasmin|gr|fleur|||70
+Jasmin étoilé|gr|fleur|||71
+Jonquille|bu|fleur|||71
+Joubarbe|vi|feuille|||71
+Kaki|fr|fruit|||71
+Kiwi|gr|fruit|||23
+Kochia|an|feuille|||71
+Lantana|an|fleur|||72
+Laurier d'Alexandrie|as|feuille|||72
+Laurier-cerise|as|feuille|||73
+Laurier-rose|as|fleur|||73
+Laurier-tin|as|fleur|||73
+Lavande à toupet|as|fleur|||234
+Lavatère|an|fleur|||73
+Lentille|po|legumineuse|3-4||73
+Leucanthème|vi|fleur|||74
+Liatris|bp|fleur|||74
+Libocèdre|co|feuille|||74
+Lierre|gr|feuille|||74
+Lierre terrestre|vi|feuille|||74
+Ligulaire|vi|fleur|||74
+Lilas|as|fleur|||75
+Lilas des Indes|as|fleur|||75
+Linaire|an|fleur|||75
+Lin annuel|an|fleur|||75
+Lin de Nouvelle-Zélande|vi|feuille|||75
+Lin vivace|vi|fleur|||75
+Lis|bu|fleur||10-11,3-4|76
+Lithospermum|vi|fleur|||76
+Lobélia|an|fleur|||76
+Lunaire|an|fleur|||76
+Lupin|vi|fleur|||76
+Lysimaque|vi|fleur|||76
+Magnolia|as|fleur|||77
+Mahonia du Japon|as|fleur|||77
+Malope|an|fleur|||77
+Marguerite d'automne|vi|fleur|||77
+Marronnier|ar|fleur|||78
+Matricaire|an|fleur|||78
+Mauve|an|fleur|||78
+Mélèze|co|feuille|||78
+Merisier des oiseaux|ar|fleur|||79
+Merveille du Pérou|an|fleur|||34
+Micocoulier|ar|feuille|||79
+Millepertuis|as|fleur|||80
+Mimosa|as|fleur|||80
+Mimulus|vi|fleur|||80
+Misère|vi|feuille|||80
+Monarde|vi|fleur|||80
+Monnaie-du-pape|an|fleur|||80
+Montbretia|bp|fleur|||81
+Muflier|an|fleur|||81
+Muguet|vi|fleur|||81
+Mûrier|ar|fruit|||81
+Myosotis|an|fleur|||81
+Myrte|as|fleur|||81
+Myrtille|fr|fruit|||82
+Narcisse|bu|fleur|||82
+Néflier commun|fr|fruit|||82
+Némésie|an|fleur|||82
+Nigelle|an|fleur|||82
+Noisetier de Byzance|ar|fruit|||83
+Œillet|vi|fleur|||83
+Œillet de poète|an|fleur|||83
+Oenothère|vi|fleur|||83
+Olivier|as|fruit|||84
+Omphalodes|vi|fleur|||84
+Oranger|as|fruit||4-5|84
+Oranger des Osages|ar|feuille|||84
+Oreille d'ours|vi|fleur|||84
+Orme|ar|feuille|||85
+Orme de Sibérie|ar|feuille|||86
+Orpin|vi|fleur|||86
+Oseille|po|feuille|3-5,8-9||86
+Osier des vanniers|as|feuille|||86
+Osmonde royale|vi|feuille|||86
+Ostrya d'Amérique|ar|feuille|||86
+Panicaut|vi|fleur|||43
+Pâquerette|an|fleur|6-7|9-10|87
+Parrotie|ar|feuille|||87
+Passiflore|gr|fleur|||87
+Patate douce|po|racine||5-6|87
+Pâtisson|po|fruit|4-5|5-6|50
+Pavot|an|fleur|||87
+Pavot bleu de l'Himalaya|vi|fleur|||88
+Pavot de Californie|an|fleur|||88
+Pélargonium|an|fleur|-|5-6|88
+Pensée|an|fleur|6-7|9-10|88
+Penstemon|vi|fleur|||88
+Perce-neige|bu|fleur|||89
+Périlla de Nankin|an|feuille|||89
+Pervenche|vi|fleur|||89
+Petit houx|as|feuille|||89
+Pétunia|an|fleur|||89
+Peuplier|ar|feuille|||91
+Peuplier blanc de Hollande|ar|feuille|||250
+Phacélie|an|fleur|3-9||91
+Phlox|vi|fleur|||91
+Pied-d'alouette|an|fleur|||
+Pimprenelle|ao|feuille|3-8||92
+Pin|co|feuille|||92
+Pissenlit|po|feuille|3-8||92
+Pivoine|vi|fleur||9-10|92
+Platane|ar|feuille|||92
+Poirée|po|feuille|4-7||93
+Pois de senteur|an|fleur|3-4,10-11||
+Potentille|as|fleur|||
+Pourpier|po|feuille|5-7||
+Primevère|vi|fleur|||
+Pulsatille|vi|fleur|||
+Pyrèthre|vi|fleur|||
+Raifort|po|racine||3-4,10-11|
+Reine-marguerite|an|fleur|3-5|5-6|
+Renoncule|bp|fleur|||
+Renouée|vi|fleur|||
+Rhododendron|as|fleur|||
+Ricin|an|feuille|3-4|5-6|
+Robinier|ar|fleur|||
+Rodgersia|vi|feuille|||
+Ronce|as|fruit|||
+Roquette|po|feuille|3-9||`.split('\n').filter(Boolean).map(l=>{const a=l.split('|'),c=IXC[a[1]]||IXC.vi;return{n:a[0],k:a[1],t:a[2],S:a[3]=='-'?'':(a[3]||c[3]),P:a[4]=='-'?'':(a[4]||c[2]),pg:a[5]||''}});
+Object.values(ls('idxadd',{})).forEach(q=>{const k=norm(q.n);if(!QC[k])QC[k]={n:q.n,t:q.t,cat:q.cat,S:q.S||'',P:q.P||'',R:'',T:'',ap:true}});
+{const CL2={'':'Toutes catégories',potager:'Potager',aromatique:'Aromatiques',fruitier:'Fruitiers',fleur:'Fleurs',arbre:'Arbres',arbuste:'Arbustes',conifere:'Conifères',vivace:'Vivaces',annuelle:'Annuelles',grimpante:'Grimpantes',bulbe:'Bulbes'},o=Object.entries(CL2).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');$('#qc').innerHTML=o;$('#smc').innerHTML=o}
+function ixPool(){const have=new Set(P.map(p=>norm(p.n))),qc=$('#qc').value;return IXD.filter(x=>!have.has(norm(x.n))&&(!qc||IXC[x.k][1]==qc))}
+function ixMatch(){const q=norm($('#q').value);return q?ixPool().filter(x=>norm(x.n).includes(q)):[]}
+let IA=ls('idxadd',{});
+function addIx(x,quiet){const k=norm(x.n);if(P.some(p=>norm(p.n)==k))return;const c=IXC[x.k],f=IXF[x.k]||IXF.vi;
+ QC[k]={n:x.n,t:x.t,cat:c[1],S:x.S,P:x.P,R:'',T:'',ap:true};IA[k]={n:x.n,t:x.t,cat:c[1],S:x.S,P:x.P};
+ if(!FI[k])FI[k]={exp:'Soleil',prof:f[0],ep:f[1],rg:f[2],j:0};
+ if(!quiet){sv('idxadd',IA);sv('fiches',FI)}
+ P.push({n:x.n,t:x.t,f:[],o:[],s:sTxt(QC[k])})}
+const ixSave=()=>{sv('idxadd',IA);sv('fiches',FI)};
+function drawIx(){const el=$('#pix'),q=norm($('#q').value);if(!q){const n=ixPool().length;el.innerHTML=n?`<b>Index de plantes</b> : ${n} autres plantes à ajouter à votre liste. Tapez un nom dans la recherche pour les trouver.`:'<b>Index de plantes</b> : toutes les plantes de l\'index sont dans votre liste.';return}
+ const m=ixMatch();el.innerHTML=`<b>Dans l'index, pas encore dans votre liste</b> (${m.length})${m.length?` <button class="btn" id="pixall" style="margin-left:.5rem">Tout ajouter (${Math.min(m.length,60)})</button>`:''}<div style="margin-top:.5rem">`
+ +(m.slice(0,40).map(x=>`<div class="row"><span><b>${esc(x.n)}</b> <small style="opacity:.8">${IXC[x.k][0]} · ${x.t}${x.pg?' · livre p. '+x.pg:''}</small></span><button class="btn" data-ix="${esc(x.n)}">Ajouter</button></div>`).join('')||'<span style="opacity:.8">Aucun résultat dans l\'index. Créez cette plante avec le formulaire « Ajouter » plus haut.</span>')
+ +(m.length>40?`<div style="opacity:.8;margin-top:.4rem">… et ${m.length-40} autres : précisez la recherche.</div>`:'')+'</div>'}
+$('#pix').onclick=e=>{const b=e.target;if(b.dataset.ix){const x=IXD.find(z=>z.n==b.dataset.ix);if(x){addIx(x);drawP()}}else if(b.id=='pixall'){const l=ixMatch().slice(0,60);if(l.length&&confirm('Ajouter '+l.length+' plantes à votre liste ?')){l.forEach(x=>addIx(x,true));ixSave();drawP()}}};
+if(ls('seedv',0)<3){sv('plantes_backup3',P);IXD.forEach(x=>addIx(x,true));ixSave();sv('seedv',3)}
+const _dp=drawP;drawP=function(){_dp();drawIx()};
+$('#q').oninput=()=>drawP();
+drawP();
+/* ---- Bouturage : plantes de l'index du livre ---- */
+const BDX=`Achillée|ec|vivace|3-4,9-10|Divisez la touffe tous les 3 à 4 ans.
+Acaena|ec|vivace|3-4,9-10|Séparez les rosettes déjà enracinées.
+Alchémille|ec|vivace|3-4,9-10|Divisez les touffes.
+Alstroemère|ec|vivace|3-4|Divisez les rhizomes avec précaution, sans casser les racines.
+Aster|ec|vivace|3-4,9-10|Divisez les touffes, de préférence au printemps.
+Astilbe|ec|vivace|3-4,9-10|Divisez la souche tous les 3 à 4 ans.
+Astrance|ec|vivace|3-4,9-10|Divisez la touffe en éclats munis de racines.
+Barbe-de-bouc|ec|vivace|3-4,9-10|Divisez la souche à la bêche, chaque morceau avec des bourgeons.
+Bec-de-grue|ec|vivace|3-4,9-10|Divisez la touffe ou séparez des éclats de rhizome.
+Benoîte|ec|vivace|3-4,9-10|Divisez la touffe tous les 3 ans.
+Bergénia|ec|vivace|4-5,9-10|Divisez les rhizomes après la floraison.
+Bouton-d'argent|ec|vivace|3-4|Divisez la touffe au printemps.
+Bambou|ec|vivace|3-4|Divisez la touffe à la bêche ou à la hache.
+Heuchère|ec|vivace|3-4,9-10|Divisez la touffe et replantez un peu plus profond.
+Joubarbe|ec|vivace|4-9|Détachez les rosettes filles : elles s'enracinent facilement.
+Leucanthème|ec|vivace|3-4,9-10|Divisez les touffes.
+Lin de Nouvelle-Zélande|ec|vivace|3-4|Divisez la souche à la bêche et raccourcissez le feuillage.
+Lysimaque|ec|vivace|3-4,9-10|Divisez les rhizomes, souvent envahissants.
+Marguerite d'automne|ec|vivace|3-4|Divisez la touffe au printemps.
+Monarde|ec|vivace|3-4,9-10|Divisez les touffes tous les 3 ans.
+Muguet|ec|vivace|9-10|Divisez les rhizomes (les pieds) et replantez aussitôt.
+Oenothère|ec|vivace|3-4|Divisez la touffe au printemps.
+Omphalodes|ec|vivace|3-4,9-10|Divisez la touffe.
+Oreille d'ours|ec|vivace|4-5|Détachez les rejets après la floraison.
+Osmonde royale|ec|vivace|3-4|Divisez la souche en préservant les racines.
+Pâquerette|ec|annuelle|5-6|Divisez les touffes après la floraison.
+Pivoine|ec|vivace|9-10|Divisez la souche à l'automne, chaque éclat avec 3 à 5 yeux.
+Primevère|ec|vivace|5-6|Divisez les touffes après la floraison.
+Pyrèthre|ec|vivace|3-4,9-10|Divisez la touffe.
+Renouée|ec|vivace|3-4,9-10|Divisez les touffes au printemps ou à l'automne.
+Rodgersia|ec|vivace|3-4|Divisez les rhizomes.
+Arum d'Éthiopie|ec|bulbe|3-4|Divisez les rhizomes en gardant un œil par morceau.
+Agapanthe|ec|bulbe|3-4|Divisez en gros morceaux, tous les 4 à 5 ans.
+Canna|ec|bulbe|3-4|Coupez le rhizome en morceaux portant chacun un œil.
+Montbretia|ec|bulbe|3-4|Séparez les cormes et les cormeaux.
+Liatris|ec|bulbe|3-4|Divisez les cormes.
+Jonquille|ec|bulbe|6-7|Soulevez les touffes quand le feuillage jaunit et séparez les bulbes.
+Narcisse|ec|bulbe|6-7|Soulevez et séparez les bulbes après la fanaison du feuillage.
+Perce-neige|ec|bulbe|3-4|Divisez en végétation, juste après la floraison.
+Petit houx|ec|arbuste|3-4|Divisez la touffe à la bêche.
+Pimprenelle|ec|aromatique|3-4|Divisez la touffe.
+Oseille|ec|potager|3-4,9-10|Divisez la touffe.
+Agastache|hb|vivace|5-7|Pousse non fleurie de 8 à 10 cm.
+Anthémis|hb|vivace|4-6|Rejet de base prélevé au printemps.
+Arabette|hb|vivace|5-7|Tiges non fleuries, après la floraison.
+Aubriète|hb|vivace|5-7|Tiges non fleuries, après la floraison.
+Campanule|hb|vivace|4-6|Rejets de base de 5 à 8 cm.
+Herbe-aux-chats|hb|vivace|5-7|Tiges de 8 à 10 cm.
+Lierre terrestre|hb|vivace|5-9|Tiges rampantes déjà racinées.
+Lin vivace|hb|vivace|5-7|Pousses tendres non fleuries.
+Lupin|hb|vivace|4-5|Rejets de base de 8 cm, avec un petit morceau de souche.
+Mimulus|hb|vivace|5-8|Tiges tendres, très faciles.
+Orpin|hb|vivace|5-8|Tiges de 8 à 10 cm : elles s'enracinent très facilement.
+Pervenche|hb|vivace|5-9|Tiges rampantes déjà racinées au sol.
+Phlox paniculé|hb|vivace|4-6|Tiges de 8 cm sur de jeunes pousses de printemps.
+Armoise|hb|aromatique|5-8|Tiges de 10 cm sans fleurs.
+Patate douce|hb|potager|4-6|Faites germer un tubercule, détachez les pousses et enracinez-les dans l'eau.
+Bégonia à massifs|hb|fleur|5-8|Extrémité de tige avec 2 feuilles.
+Bégonia tubéreux|hb|fleur|4-5|Jeunes pousses de 5 cm prélevées sur le tubercule.
+Bidens|hb|fleur|5-8|Tige tendre non fleurie.
+Brachyscome|hb|fleur|5-8|Tige tendre non fleurie.
+Impatience|hb|fleur|5-8|Extrémité de tige de 8 cm : s'enracine aussi dans l'eau.
+Impatience de Nouvelle-Guinée|hb|fleur|5-8|Extrémité de tige de 8 cm, en atmosphère chaude.
+Lantana|hb|fleur|5-8|Tige non fleurie, à rentrer l'hiver.
+Pétunia|hb|fleur|5-8|Extrémité de tige, surtout pour les variétés retombantes.
+Némésie|hb|fleur|5-8|Tige tendre non fleurie.
+Lobélia|hb|fleur|5-7|Tiges tendres des variétés vivaces.
+Passiflore|hb|grimpante|5-8|Tige avec 2 à 3 nœuds, au chaud.
+Abélia|sa|arbuste|7-9|Pousse de l'année de 10 cm.
+Agneau-chaste|sa|arbuste|7-9|Pousse de l'année avec 2 paires de feuilles.
+Airelle|sa|arbuste|7-9|Pousse de l'année, en terre de bruyère.
+Andromède|sa|arbuste|7-9|Pousse de l'année, en terre de bruyère.
+Arbre à perruques|sa|arbuste|6-8|Pousse tendre de l'année.
+Argousier|bs|arbuste|11-3|Rameau d'un an de 20 cm.
+Aucuba du Japon|sa|arbuste|7-9|Pousse de l'année avec quelques feuilles.
+Azalée|sa|arbuste|7-9|Pousse de l'année de 8 cm, en terre de bruyère.
+Baguenaudier commun|sa|arbuste|6-8|Pousse de l'année encore tendre.
+Berbéris|sa|arbuste|7-9|Pousse de l'année de 10 cm.
+Bruyère|sa|arbuste|7-9|Brins de 4 à 5 cm, en terre de bruyère.
+Buis|sa|arbuste|7-9|Rameaux de 8 à 10 cm ; possible aussi en septembre-octobre.
+Buisson-ardent|sa|arbuste|7-9|Pousse de l'année de 10 cm.
+Buplèvre|sa|arbuste|7-9|Pousse de l'année.
+Callune|sa|arbuste|7-9|Brins de 4 à 5 cm, en terre de bruyère.
+Camélia|sa|arbuste|7-9|Pousse de l'année de 8 à 10 cm, sous étouffée aérée.
+Céanothe|sa|arbuste|7-9|Pousse de l'année.
+Hibiscus|sa|arbuste|6-8|Pousse de l'année ; possible aussi à bois sec en hiver.
+Houx commun|sa|arbuste|8-10|Rameau de l'année : enracinement lent.
+Laurier-cerise|sa|arbuste|7-9|Pousse de l'année de 10 à 15 cm.
+Lavande à toupet|sa|arbuste|7-10|Pousse non fleurie, substrat très drainant.
+Lilas des Indes|sa|arbuste|6-8|Pousse tendre ; possible aussi à bois sec en hiver.
+Mahonia du Japon|sa|arbuste|8-10|Tronçon de tige avec un œil, en châssis.
+Millepertuis|sa|arbuste|6-9|Pousse de l'année.
+Myrte|sa|arbuste|7-9|Pousse de l'année, à garder hors gel.
+Olivier|sa|arbuste|7-9|Rameau de l'année : enracinement lent et difficile.
+Osier des vanniers|bs|arbuste|11-3|Rameau d'un an planté en sol frais.
+Potentille|sa|arbuste|6-8|Pousse de l'année.
+Rhododendron|sa|arbuste|7-9|Pousse de l'année en terre de bruyère : assez difficile.
+Aralia élevé|ra|arbuste|11-2|Tronçons de racine en repos de végétation.
+Myrtille|sa|fruitier|7-9|Pousse de l'année, en terre de bruyère.
+Mûrier|bs|fruitier|11-3|Rameau d'un an.
+Peuplier|bs|arbre|11-3|Rameau d'un an planté en sol frais.
+Peuplier blanc de Hollande|bs|arbre|11-3|Rameau d'un an planté en sol frais.
+Platane|bs|arbre|11-2|Rameau d'un an planté en sol frais.
+Actinidia|sa|grimpante|6-8|Tige de l'année avec 2 à 3 nœuds.
+Kiwi|sa|grimpante|6-8|Tige de l'année ; possible aussi à bois sec en hiver.
+Bignone|sa|grimpante|7-9|Tige de l'année.
+Bougainvillée|sa|grimpante|5-8|Tige semi-aoûtée, au chaud, sous étouffée.
+Hortensia grimpant|sa|grimpante|6-8|Pousse de l'année avec un nœud.
+Jasmin|sa|grimpante|7-9|Tige de l'année.
+Jasmin étoilé|sa|grimpante|7-9|Tige de l'année.
+Œillet|sa|vivace|6-8|Rameau latéral de 8 cm non fleuri.
+Penstemon|sa|vivace|7-9|Pousse non fleurie de 8 cm : à abriter l'hiver.
+Ibéris|sa|vivace|6-8|Rameaux non fleuris, après la floraison.
+Lithospermum|sa|vivace|6-8|Pousse de 5 à 8 cm, en terre sans calcaire.
+If commun|cf|conifere|10-2|Bouture à talon de 10 à 15 cm, en châssis froid.
+If d'Irlande|cf|conifere|10-2|Bouture à talon de 10 à 15 cm, en châssis froid.
+Raifort|ra|potager|11-3|Tronçons de racine de 15 cm plantés en biais.`.split('\n').filter(Boolean).map(l=>{const a=l.split('|');return{n:a[0],t:a[1],c:a[2],m:a[3],tip:a[4]}});
+BDX.forEach(r=>{if(!BD.some(b=>b.n==r.n&&b.t==r.t))BD.push(r)});
 </script></body></html>
