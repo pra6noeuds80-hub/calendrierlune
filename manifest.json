@@ -1,0 +1,14 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "calendrier lunaire",
+  "orientation": "any",
+  "scope": "//calendrierlune/",
+  "short_name": "lune",
+  "start_url": "/calendrierlune/",
+  "theme_color": "#ffffff",
+  "id": "/calendrier lune/",
+  "description": "suivre son jardin selon la line",
+  "lang": "fr"
+}
